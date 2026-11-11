@@ -1,5 +1,5 @@
 /build
-/src/main/java/alexrnov/signcompat/presentation/HomeComponent.kt
+/src/main/java/alexrnov/signcompat/presentation/components/HomeComponent.kt
 /src/main/java/alexrnov/signcompat/presentation/MainRootScreen.kt
-/src/main/java/alexrnov/signcompat/presentation/DiskComponent.kt
+/src/main/java/alexrnov/signcompat/presentation/components/DiskComponent.kt
 /src/main/res
