@@ -1,7 +1,9 @@
 package alexrnov.signcompat.presentation
 
+import alexrnov.signcompat.domain.usecase.CompatLevel
 import alexrnov.signcompat.domain.usecase.ZodiacSign
 import alexrnov.signcompat.presentation.components.Sign
+import androidx.compose.ui.graphics.Color
 
 fun getZodiacSigns() = listOf(
 	Sign(ZodiacSign.ARIES, "Овен", "♈\uFE0E", "21.03-19.04"),
@@ -17,3 +19,14 @@ fun getZodiacSigns() = listOf(
 	Sign(ZodiacSign.AQUARIUS, "Водолей", "♒\uFE0E", "20.01-18.02"),
 	Sign(ZodiacSign.PISCES, "Рыбы", "♓\uFE0E", "19.02-20.03")
 )
+
+fun CompatLevel.toColor(): Color {
+	return when (this) {
+		CompatLevel.IDEAL -> Color(0xFF0E9F00)
+		CompatLevel.HIGH -> Color(0xFF52E219)
+		CompatLevel.NORMAL -> Color(0xFFC8E32C)
+		CompatLevel.ACCEPTABLE -> Color(0xFFFFDA00)
+		CompatLevel.LOW -> Color(0xFFFFA400)
+		CompatLevel.VERY_LOW -> Color(0xFFFF0000)
+	}
+}
