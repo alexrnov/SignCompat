@@ -1,5 +1,6 @@
 package alexrnov.signcompat.presentation.components
 
+import alexrnov.signcompat.domain.usecase.Gender
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -27,35 +28,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun GenderComponent() {
+fun GenderComponent(
+	userGender: Gender,
+	targetGender: Gender,
+	onUserGenderSelected: (Gender) -> Unit,
+	onTargetGenderSelected: (Gender) -> Unit,
+	modifier: Modifier = Modifier
+) {
 	Row(
-		modifier = Modifier
+		modifier = modifier
 			.fillMaxWidth()
-			.wrapContentHeight() // Даем контейнеру подстроиться под высоту 40.dp наших кнопок
+			.wrapContentHeight()
 			.padding(top = 4.dp)
 			.background(Color.Magenta)
 	) {
+		// 1. Блок: Мой пол
 		GenderSelector(
 			title = "мой пол",
-			selectedGenderIndex = 0, // ТУТ: передай переменную состояния (например, myGenderState)
-			onGenderSelected = { index ->
-				// ТУТ: обновляй свое состояние при клике
-			},
+			selectedGender = userGender,
+			onGenderSelected = onUserGenderSelected,
 			modifier = Modifier
 				.weight(0.5f)
-				.background(Color.Red) // Оставляем твой красный фон для проверки
+				.background(Color.Red)
 		)
 
 		// 2. Блок: Пол других знаков
 		GenderSelector(
 			title = "пол других знаков",
-			selectedGenderIndex = 1, // ТУТ: передай переменную состояния (например, otherGenderState)
-			onGenderSelected = { index ->
-				// ТУТ: обновляй свое состояние при клике
-			},
+			selectedGender = targetGender,
+			onGenderSelected = onTargetGenderSelected,
 			modifier = Modifier
 				.weight(0.5f)
-				.background(Color.Blue) // Оставляем твой синий фон для проверки
+				.background(Color.Blue)
 		)
 	}
 }
@@ -63,11 +67,10 @@ fun GenderComponent() {
 @Composable
 fun GenderSelector(
 	title: String,
-	selectedGenderIndex: Int,
-	onGenderSelected: (Int) -> Unit,
+	selectedGender: Gender,
+	onGenderSelected: (Gender) -> Unit,
 	modifier: Modifier = Modifier
 ) {
-
 	val dividerColor = Color.LightGray
 
 	Column(
@@ -83,19 +86,25 @@ fun GenderSelector(
 				.padding(bottom = 4.dp)
 		)
 
-		Row(modifier = Modifier.fillMaxWidth().height(44.dp)) {
-			genders.forEachIndexed { index, gender ->
-				val isSelected = selectedGenderIndex == index
+		Row(
+			modifier = Modifier
+				.fillMaxWidth()
+				.height(44.dp)
+		) {
+			genders.forEach { genderButton ->
+				val isSelected = selectedGender == genderButton.type
 
 				Surface(
-					modifier = Modifier.weight(0.5f).fillMaxHeight(),
+					modifier = Modifier
+						.weight(0.5f)
+						.fillMaxHeight(),
 					shape = RectangleShape,
 					color = if (isSelected) {
 						MaterialTheme.colorScheme.primaryContainer
 					} else {
 						MaterialTheme.colorScheme.surfaceContainer
 					},
-					onClick = { onGenderSelected(index) }
+					onClick = { onGenderSelected(genderButton.type) }
 				) {
 					Row(
 						modifier = Modifier
@@ -104,13 +113,12 @@ fun GenderSelector(
 						verticalAlignment = Alignment.CenterVertically,
 						horizontalArrangement = Arrangement.Center
 					) {
-						val ringColor = if (index == 0) Color(0xFF2196F3) else Color(0xFFFF6293)
 						Box(
 							modifier = Modifier
 								.padding(end = 8.dp)
 								.fillMaxHeight(0.8f)
 								.aspectRatio(1f)
-								.background(color = ringColor, shape = CircleShape)
+								.background(color = genderButton.ringColor, shape = CircleShape)
 								.padding(5.dp),
 							contentAlignment = Alignment.Center
 						) {
@@ -120,12 +128,12 @@ fun GenderSelector(
 									.background(color = Color.White, shape = CircleShape),
 								contentAlignment = Alignment.Center
 							) {
-								Text(text = gender.icon, fontSize = 14.sp)
+								Text(text = genderButton.icon, fontSize = 14.sp)
 							}
 						}
 
 						Text(
-							text = gender.name,
+							text = genderButton.name,
 							maxLines = 1,
 							style = MaterialTheme.typography.labelMedium
 						)
@@ -136,6 +144,14 @@ fun GenderSelector(
 	}
 }
 
-data class GenderButton(val name: String, val icon: String)
+data class GenderButton(
+	val type: Gender,
+	val name: String,
+	val icon: String,
+	val ringColor: Color
+)
 
-val genders = listOf(GenderButton("Муж.", "♂️"), GenderButton("Жен.", "♀️"))
+val genders = listOf(
+	GenderButton(Gender.MALE, "Муж.", "♂️", Color(0xFF2196F3)),
+	GenderButton(Gender.FEMALE, "Жен.", "♀️", Color(0xFFFF6293))
+)

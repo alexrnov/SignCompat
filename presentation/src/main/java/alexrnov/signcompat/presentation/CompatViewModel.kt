@@ -6,6 +6,7 @@ import alexrnov.signcompat.domain.usecase.Gender
 import alexrnov.signcompat.domain.usecase.Person
 import alexrnov.signcompat.domain.usecase.SignCompatResult
 import alexrnov.signcompat.domain.usecase.ZodiacSign
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,17 +31,8 @@ class CompatViewModel(
 		recalculate()
 	}
 
-	/*
 	fun onUserSignChanged(newSign: ZodiacSign) {
-		_uiState.update { current ->
-			val updated = current.copy(userSign = newSign)
-			updated.copy(results = calculateResults(updated))
-		}
-	}
-
-	 */
-
-	fun onUserSignChanged(newSign: ZodiacSign) {
+		Log.i("signcompat", "sign: $newSign")
 		_uiState.update { it.copy(userSign = newSign) }
 		recalculate()
 	}

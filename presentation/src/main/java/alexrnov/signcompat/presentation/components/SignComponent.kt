@@ -1,6 +1,8 @@
 package alexrnov.signcompat.presentation.components
 
 import alexrnov.signcompat.domain.usecase.Person
+import alexrnov.signcompat.domain.usecase.ZodiacSign
+import alexrnov.signcompat.presentation.getZodiacSigns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -32,24 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SignComponent(modifier: Modifier = Modifier) {
-	// 2. Добавляем временные интервалы для каждого знака
-	val signs = listOf(
-		Sign("Овен", "♈\uFE0E", "21.03-19.04"),
-		Sign("Телец", "♉\uFE0E", "20.04-20.05"),
-		Sign("Близнецы", "♊\uFE0E", "21.05-20.06"),
-		Sign("Рак", "♋\uFE0E", "21.06-22.07"),
-		Sign("Лев", "♌\uFE0E", "23.07-22.08"),
-		Sign("Дева", "♍\uFE0E", "23.08-22.09"),
-		Sign("Весы", "♎\uFE0E", "23.09-22.10"),
-		Sign("Скорпион", "♏\uFE0E", "23.10-21.11"),
-		Sign("Стрелец", "♐\uFE0E", "22.11-21.12"),
-		Sign("Козерог", "♑\uFE0E", "22.12-19.01"),
-		Sign("Водолей", "♒\uFE0E", "20.01-18.02"),
-		Sign("Рыбы", "♓\uFE0E", "19.02-20.03")
-	)
+fun SignComponent(
+	selectedSign: ZodiacSign,
+	onSignSelected: (ZodiacSign) -> Unit,
+	modifier: Modifier = Modifier
+) {
+	val signs = remember { getZodiacSigns() }
 
-	var selectedSign by remember { mutableStateOf<Sign?>(null) }
 	val rows = remember(signs) { signs.chunked(3) }
 
 	val whiteEmojiStyle = TextStyle(
@@ -71,7 +62,8 @@ fun SignComponent(modifier: Modifier = Modifier) {
 					.weight(1f)
 			) {
 				rowItems.forEach { sign ->
-					val isSelected = selectedSign == sign
+					// Сравниваем напрямую с enum из ViewModel
+					val isSelected = selectedSign == sign.type
 
 					Surface(
 						modifier = Modifier
@@ -83,16 +75,14 @@ fun SignComponent(modifier: Modifier = Modifier) {
 						} else {
 							MaterialTheme.colorScheme.surfaceContainer
 						},
-						onClick = { selectedSign = sign }
+						onClick = { onSignSelected(sign.type) } // Сообщаем ViewModel о выборе
 					) {
-						// ИСПРАВЛЕНО: Вернули модификатор .border сюда
 						Row(
 							modifier = Modifier
 								.fillMaxSize()
 								.border(width = 0.5.dp, color = dividerColor, shape = RectangleShape),
 							verticalAlignment = Alignment.CenterVertically
 						) {
-							// Фиолетовый кружок с иконкой
 							Box(
 								modifier = Modifier
 									.padding(start = 6.dp)
@@ -104,7 +94,6 @@ fun SignComponent(modifier: Modifier = Modifier) {
 								Text(text = sign.icon, style = whiteEmojiStyle, fontSize = 14.sp)
 							}
 
-							// Блок с названием и датами
 							Box(
 								modifier = Modifier.weight(1f),
 								contentAlignment = Alignment.Center
@@ -132,4 +121,9 @@ fun SignComponent(modifier: Modifier = Modifier) {
 	}
 }
 
-data class Sign(val name: String, val icon: String, val period: String)
+data class Sign(
+	val type: ZodiacSign,
+	val name: String,
+	val icon: String,
+	val period: String
+)
