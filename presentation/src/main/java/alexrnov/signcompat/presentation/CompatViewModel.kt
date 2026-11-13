@@ -1,5 +1,6 @@
 package alexrnov.signcompat.presentation
 
+import alexrnov.signcompat.domain.PreferencesRepository
 import alexrnov.signcompat.domain.usecase.CompatLevel
 import alexrnov.signcompat.domain.usecase.CompatUseCase
 import alexrnov.signcompat.domain.usecase.Gender
@@ -8,9 +9,15 @@ import alexrnov.signcompat.domain.usecase.SignCompatResult
 import alexrnov.signcompat.domain.usecase.ZodiacSign
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class CompatUiState(
 	val userSign: ZodiacSign = ZodiacSign.ARIES,
@@ -20,40 +27,44 @@ data class CompatUiState(
 )
 
 class CompatViewModel(
-	private val compatUseCase: CompatUseCase
+	private val compatUseCase: CompatUseCase,
+	private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
 
-	private val _uiState = MutableStateFlow(CompatUiState())
-	val uiState = _uiState.asStateFlow()
+	// Автоматически пересчитываем CompatUiState при любом изменении в DataStore
+	val uiState: StateFlow<CompatUiState> = preferencesRepository.userPreferences
+		.map { prefs ->
+			val user = Person(sign = prefs.userSign, gender = prefs.userGender)
+			val calculatedList = compatUseCase(user = user, targetGender = prefs.targetGender)
 
-	init {
-		// Сразу считаем список для начальных значений по умолчанию
-		recalculate()
-	}
+			CompatUiState(
+				userSign = prefs.userSign,
+				userGender = prefs.userGender,
+				targetGender = prefs.targetGender,
+				results = calculatedList
+			)
+		}
+		.stateIn(
+			scope = viewModelScope,
+			started = SharingStarted.WhileSubscribed(5_000),
+			initialValue = CompatUiState() // Начальное состояние до загрузки с диска
+		)
 
 	fun onUserSignChanged(newSign: ZodiacSign) {
-		Log.i("signcompat", "sign: $newSign")
-		_uiState.update { it.copy(userSign = newSign) }
-		recalculate()
+		viewModelScope.launch {
+			preferencesRepository.updateUserSign(newSign)
+		}
 	}
 
 	fun onUserGenderChanged(newGender: Gender) {
-		_uiState.update { it.copy(userGender = newGender) }
-		recalculate()
+		viewModelScope.launch {
+			preferencesRepository.updateUserGender(newGender)
+		}
 	}
 
 	fun onTargetGenderChanged(newTargetGender: Gender) {
-		_uiState.update { it.copy(targetGender = newTargetGender) }
-		recalculate()
-	}
-
-	private fun recalculate() {
-		val current = _uiState.value
-		val user = Person(sign = current.userSign, gender = current.userGender)
-
-		// Получаем список из 12 результатов (при желании можно добавить .sortedByDescending { it.level.score })
-		val calculatedList = compatUseCase(user = user, targetGender = current.targetGender)
-
-		_uiState.update { it.copy(results = calculatedList) }
+		viewModelScope.launch {
+			preferencesRepository.updateTargetGender(newTargetGender)
+		}
 	}
 }

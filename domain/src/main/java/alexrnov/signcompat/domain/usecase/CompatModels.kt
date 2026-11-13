@@ -27,3 +27,9 @@ data class SignCompatResult(
 	val targetSign: ZodiacSign,
 	val level: CompatLevel
 )
+
+data class UserPreferences(
+	val userSign: ZodiacSign = ZodiacSign.ARIES,
+	val userGender: Gender = Gender.MALE,
+	val targetGender: Gender = Gender.FEMALE
+)

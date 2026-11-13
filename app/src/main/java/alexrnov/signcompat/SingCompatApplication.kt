@@ -1,5 +1,6 @@
 package alexrnov.signcompat
 
+import alexrnov.signcompat.data.dataModule
 import alexrnov.signcompat.domain.domainModule
 import alexrnov.signcompat.presentation.presentationModule
 import android.app.Application
@@ -12,10 +13,7 @@ class SingCompatApplication : Application() {
 
 		startKoin {
 			androidContext(this@SingCompatApplication)
-			modules(
-				presentationModule,
-				domainModule
-			)
+			modules(presentationModule, domainModule, dataModule)
 		}
 	}
 }
