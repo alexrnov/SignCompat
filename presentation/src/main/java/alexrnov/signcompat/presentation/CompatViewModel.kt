@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class CompatUiState(
+	val isLoading: Boolean = true, // По умолчанию true, пока идёт чтение с диска
 	val userSign: ZodiacSign = ZodiacSign.ARIES,
 	val userGender: Gender = Gender.MALE,
 	val targetGender: Gender = Gender.FEMALE,
@@ -31,13 +32,13 @@ class CompatViewModel(
 	private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
 
-	// Автоматически пересчитываем CompatUiState при любом изменении в DataStore
 	val uiState: StateFlow<CompatUiState> = preferencesRepository.userPreferences
 		.map { prefs ->
 			val user = Person(sign = prefs.userSign, gender = prefs.userGender)
 			val calculatedList = compatUseCase(user = user, targetGender = prefs.targetGender)
 
 			CompatUiState(
+				isLoading = false, // Данные загружены и расчёт выполнен
 				userSign = prefs.userSign,
 				userGender = prefs.userGender,
 				targetGender = prefs.targetGender,
@@ -47,7 +48,7 @@ class CompatViewModel(
 		.stateIn(
 			scope = viewModelScope,
 			started = SharingStarted.WhileSubscribed(5_000),
-			initialValue = CompatUiState() // Начальное состояние до загрузки с диска
+			initialValue = CompatUiState(isLoading = true)
 		)
 
 	fun onUserSignChanged(newSign: ZodiacSign) {
