@@ -1,5 +1,6 @@
 package alexrnov.signcompat.presentation
 
+import alexrnov.signcompat.domain.DescriptionRepository
 import alexrnov.signcompat.domain.PreferencesRepository
 import alexrnov.signcompat.domain.usecase.CompatLevel
 import alexrnov.signcompat.domain.usecase.CompatUseCase
@@ -29,7 +30,8 @@ data class CompatUiState(
 
 class CompatViewModel(
 	private val compatUseCase: CompatUseCase,
-	private val preferencesRepository: PreferencesRepository
+	private val preferencesRepository: PreferencesRepository,
+	private val descriptionRepository: DescriptionRepository
 ) : ViewModel() {
 
 	val uiState: StateFlow<CompatUiState> = preferencesRepository.userPreferences
@@ -66,6 +68,17 @@ class CompatViewModel(
 	fun onTargetGenderChanged(newTargetGender: Gender) {
 		viewModelScope.launch {
 			preferencesRepository.updateTargetGender(newTargetGender)
+		}
+	}
+
+	fun onSignClicked(targetSign: ZodiacSign) {
+		viewModelScope.launch {
+			val current = uiState.value
+			val user = Person(current.userSign, current.userGender)
+			val target = Person(targetSign, current.targetGender)
+
+			val text = descriptionRepository.getDescription(user, target)
+			// Сохраняем текст и выбранный знак в стейт для отображения диалога
 		}
 	}
 }

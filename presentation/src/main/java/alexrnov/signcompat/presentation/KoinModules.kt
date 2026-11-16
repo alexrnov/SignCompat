@@ -7,7 +7,8 @@ val presentationModule = module {
 	viewModel {
 		CompatViewModel(
 			compatUseCase = get(),
-			preferencesRepository = get()
+			preferencesRepository = get(),
+			descriptionRepository = get()
 		)
 	}
 }
