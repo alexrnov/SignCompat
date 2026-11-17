@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -25,7 +26,8 @@ data class CompatUiState(
 	val userSign: ZodiacSign = ZodiacSign.ARIES,
 	val userGender: Gender = Gender.MALE,
 	val targetGender: Gender = Gender.FEMALE,
-	val results: List<SignCompatResult> = emptyList()
+	val results: List<SignCompatResult> = emptyList(),
+	val selectedPair: SelectedPairDetails? = null // null = BottomSheet закрыт
 )
 
 class CompatViewModel(
@@ -34,24 +36,28 @@ class CompatViewModel(
 	private val descriptionRepository: DescriptionRepository
 ) : ViewModel() {
 
-	val uiState: StateFlow<CompatUiState> = preferencesRepository.userPreferences
-		.map { prefs ->
-			val user = Person(sign = prefs.userSign, gender = prefs.userGender)
-			val calculatedList = compatUseCase(user = user, targetGender = prefs.targetGender)
+	private val _selectedPair = MutableStateFlow<SelectedPairDetails?>(null)
 
-			CompatUiState(
-				isLoading = false, // Данные загружены и расчёт выполнен
-				userSign = prefs.userSign,
-				userGender = prefs.userGender,
-				targetGender = prefs.targetGender,
-				results = calculatedList
-			)
-		}
-		.stateIn(
-			scope = viewModelScope,
-			started = SharingStarted.WhileSubscribed(5_000),
-			initialValue = CompatUiState(isLoading = true)
+	val uiState: StateFlow<CompatUiState> = combine(
+		preferencesRepository.userPreferences,
+		_selectedPair
+	) { prefs, selectedPair ->
+		val user = Person(sign = prefs.userSign, gender = prefs.userGender)
+		val calculatedList = compatUseCase(user = user, targetGender = prefs.targetGender)
+
+		CompatUiState(
+			isLoading = false,
+			userSign = prefs.userSign,
+			userGender = prefs.userGender,
+			targetGender = prefs.targetGender,
+			results = calculatedList,
+			selectedPair = selectedPair
 		)
+	}.stateIn(
+		scope = viewModelScope,
+		started = SharingStarted.WhileSubscribed(5_000),
+		initialValue = CompatUiState(isLoading = true)
+	)
 
 	fun onUserSignChanged(newSign: ZodiacSign) {
 		viewModelScope.launch {
@@ -77,8 +83,25 @@ class CompatViewModel(
 			val user = Person(current.userSign, current.userGender)
 			val target = Person(targetSign, current.targetGender)
 
-			val text = descriptionRepository.getDescription(user, target)
-			// Сохраняем текст и выбранный знак в стейт для отображения диалога
+			val level = compatUseCase(user, target)
+			val description = descriptionRepository.getDescription(user, target)
+
+			_selectedPair.value = SelectedPairDetails(
+				targetSign = targetSign,
+				level = level,
+				description = description
+			)
 		}
 	}
+
+	// Вызывается при закрытии шторки свайпом или кнопкой
+	fun onDismissBottomSheet() {
+		_selectedPair.value = null
+	}
 }
+
+data class SelectedPairDetails(
+	val targetSign: ZodiacSign,
+	val level: CompatLevel,
+	val description: String
+)

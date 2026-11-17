@@ -30,3 +30,14 @@ fun CompatLevel.toColor(): Color {
 		CompatLevel.VERY_LOW -> Color(0xFFFF0000)
 	}
 }
+
+fun CompatLevel.toTitle(): String {
+	return when (this) {
+		CompatLevel.IDEAL -> "Идеальная совместимость"
+		CompatLevel.HIGH -> "Высокая совместимость"
+		CompatLevel.NORMAL -> "Нормальная совместимость"
+		CompatLevel.ACCEPTABLE -> "Приемлемая совместимость"
+		CompatLevel.LOW -> "Низкая совместимость"
+		CompatLevel.VERY_LOW -> "Очень низкая совместимость"
+	}
+}
