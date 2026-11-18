@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
@@ -34,104 +35,60 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.EmojiSupportMatch
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.Hyphens
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompatibilityBottomSheet(
-	userSign: ZodiacSign,
-	userGender: Gender,
-	targetGender: Gender,
+	isTablet: Boolean,
+	isLandscape: Boolean,
 	pairDetails: SelectedPairDetails,
 	onDismiss: () -> Unit
 ) {
 	val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-	val zodiacSymbols = getZodiacSigns()
-
-	val userSignInfo = zodiacSymbols[userSign.ordinal]
-	val targetSignInfo = zodiacSymbols[pairDetails.targetSign.ordinal]
-	val levelColor = pairDetails.level.toColor()
 
 	ModalBottomSheet(
 		onDismissRequest = onDismiss,
 		sheetState = sheetState,
+		sheetMaxWidth = if (isLandscape) 600.dp else BottomSheetDefaults.SheetMaxWidth,
 		containerColor = MaterialTheme.colorScheme.surface,
 		dragHandle = { BottomSheetDefaults.DragHandle() }
 	) {
 		Column(
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(horizontal = 24.dp)
-				.padding(bottom = 32.dp), // Отступ снизу для навигационной панели Android
+				.padding(horizontal = sidePadding(isTablet))
+				.padding(bottom = verticalPadding(isLandscape, isTablet)), // Отступ снизу для навигационной панели Android
 			horizontalAlignment = Alignment.CenterHorizontally,
 			verticalArrangement = Arrangement.spacedBy(16.dp)
 		) {
-			/*
-			// 1. Иконки двух знаков с кольцами пола
-			Row(
-				verticalAlignment = Alignment.CenterVertically,
-				horizontalArrangement = Arrangement.spacedBy(16.dp)
-			) {
-				Text(
-					text = "${userSignInfo.name}",
-					style = MaterialTheme.typography.titleLarge,
-					textAlign = TextAlign.Center
-				)
-				SignSheetBadge(
-					icon = userSignInfo.icon,
-					ringColor = if (userGender == Gender.MALE) Color(0xFF2196F3) else Color(0xFFE91E63)
-				)
-				Text(
-					text = "+",
-					style = MaterialTheme.typography.headlineSmall,
-					color = MaterialTheme.colorScheme.onSurfaceVariant
-				)
-				SignSheetBadge(
-					icon = targetSignInfo.icon,
-					ringColor = if (targetGender == Gender.MALE) Color(0xFF2196F3) else Color(0xFFE91E63)
-				)
-				Text(
-					text = "${targetSignInfo.name}",
-					style = MaterialTheme.typography.titleLarge,
-					textAlign = TextAlign.Center
-				)
-			}
-
-			// 3. Цветной бейдж уровня совместимости
-			Surface(
-				color = levelColor.copy(alpha = 0.15f),
-				shape = CircleShape
-			) {
-				Text(
-					text = "${pairDetails.level.toTitle()} (${pairDetails.level.score}/6)",
-					color = levelColor,
-					style = MaterialTheme.typography.labelLarge,
-					modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-				)
-			}
-
-			HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-			*/
-
-
-
-			// 4. Подробный текст из compatibility_descriptions.json
 			Text(
 				text = pairDetails.description,
-				style = MaterialTheme.typography.bodyLarge,
-				color = MaterialTheme.colorScheme.onSurface,
-				lineHeight = 24.sp
+				style = MaterialTheme.typography.bodyMedium.copy(
+					//fontWeight = FontWeight.Medium,
+					hyphens = Hyphens.Auto,
+					lineBreak = LineBreak(
+						strategy = LineBreak.Strategy.HighQuality,
+						strictness = LineBreak.Strictness.Strict,
+						wordBreak = LineBreak.WordBreak.Default
+					),
+					platformStyle = PlatformTextStyle(includeFontPadding = false)
+				),
+				color = MaterialTheme.colorScheme.onSurfaceVariant, // color = MaterialTheme.colorScheme.onSurface
+				textAlign = TextAlign.Justify,
+				modifier = Modifier.fillMaxWidth()
 			)
 
-			Spacer(modifier = Modifier.height(8.dp))
-
-			// 5. Кнопка закрытия
 			Button(
 				onClick = onDismiss,
-				modifier = Modifier.fillMaxWidth()
+				modifier = Modifier
+					.then(if (isLandscape) Modifier.widthIn(max = 400.dp) else Modifier)
+					.fillMaxWidth()
 			) {
 				Text("Ok")
 			}
@@ -139,27 +96,13 @@ fun CompatibilityBottomSheet(
 	}
 }
 
-@Composable
-private fun SignSheetBadge(icon: String, ringColor: Color) {
-	val whiteEmojiStyle = TextStyle(
-		color = Color.White,
-		platformStyle = PlatformTextStyle(emojiSupportMatch = EmojiSupportMatch.None)
-	)
+fun sidePadding(isTablet: Boolean): Dp {
+	return if (isTablet) 16.dp else 12.dp
+}
 
-	Box(
-		modifier = Modifier
-			.size(56.dp)
-			.background(color = ringColor, shape = CircleShape)
-			.padding(4.dp),
-		contentAlignment = Alignment.Center
-	) {
-		Box(
-			modifier = Modifier
-				.fillMaxSize()
-				.background(color = Color(0xFF8E24AA), shape = CircleShape),
-			contentAlignment = Alignment.Center
-		) {
-			Text(text = icon, style = whiteEmojiStyle, fontSize = 22.sp)
-		}
+fun verticalPadding(isLandscape: Boolean, isTablet: Boolean): Dp {
+	return when {
+		isLandscape -> if (isTablet) 42.dp else 14.dp
+		else -> if (isTablet) 48.dp else 0.dp
 	}
 }
