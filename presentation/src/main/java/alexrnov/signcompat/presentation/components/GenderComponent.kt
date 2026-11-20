@@ -39,10 +39,8 @@ fun GenderComponent(
 		modifier = modifier
 			.fillMaxWidth()
 			.wrapContentHeight()
-			.padding(top = 4.dp)
 			.background(Color.Magenta)
 	) {
-		// 1. Блок: Мой пол
 		GenderSelector(
 			title = "мой пол",
 			selectedGender = userGender,
@@ -52,7 +50,6 @@ fun GenderComponent(
 				.background(Color.Red)
 		)
 
-		// 2. Блок: Пол других знаков
 		GenderSelector(
 			title = "пол других знаков",
 			selectedGender = targetGender,
@@ -74,7 +71,7 @@ fun GenderSelector(
 	val dividerColor = Color.LightGray
 
 	Column(
-		modifier = modifier.padding(2.dp),
+		modifier = modifier.padding(start = 8.dp, end = 8.dp),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
 		Text(
