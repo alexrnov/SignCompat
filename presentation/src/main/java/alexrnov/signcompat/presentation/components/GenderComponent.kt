@@ -47,6 +47,7 @@ fun GenderComponent(
 			onGenderSelected = onUserGenderSelected,
 			modifier = Modifier
 				.weight(0.5f)
+				.padding(end = 4.dp)
 				.background(Color.Red)
 		)
 
@@ -56,6 +57,7 @@ fun GenderComponent(
 			onGenderSelected = onTargetGenderSelected,
 			modifier = Modifier
 				.weight(0.5f)
+				.padding(start = 4.dp)
 				.background(Color.Blue)
 		)
 	}
@@ -71,7 +73,7 @@ fun GenderSelector(
 	val dividerColor = Color.LightGray
 
 	Column(
-		modifier = modifier.padding(start = 8.dp, end = 8.dp),
+		modifier = modifier,
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
 		Text(
@@ -84,9 +86,7 @@ fun GenderSelector(
 		)
 
 		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.height(44.dp)
+			modifier = Modifier.fillMaxWidth()
 		) {
 			genders.forEach { genderButton ->
 				val isSelected = selectedGender == genderButton.type
@@ -125,7 +125,7 @@ fun GenderSelector(
 									.background(color = Color.White, shape = CircleShape),
 								contentAlignment = Alignment.Center
 							) {
-								Text(text = genderButton.icon, fontSize = 14.sp)
+								//Text(text = genderButton.icon, fontSize = 14.sp)
 							}
 						}
 
