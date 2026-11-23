@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -19,6 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -101,8 +106,13 @@ fun LegendItem(
 	text: String,
 	modifier: Modifier = Modifier
 ) {
+	val textStyle = MaterialTheme.typography.bodyMedium.copy(
+		platformStyle = PlatformTextStyle(includeFontPadding = false)
+	)
+	val density = LocalDensity.current
+
 	Row(
-		modifier = modifier.fillMaxWidth(), // Передаем modifier с weight сюда
+		modifier = modifier.fillMaxWidth(),
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		Box(
@@ -110,15 +120,22 @@ fun LegendItem(
 				.width(36.dp)
 				.height(4.dp)
 				.background(color, shape = CircleShape)
+				.alignBy { placeable ->
+					// Вычисляем оптическую середину строчной буквы в пикселях с учетом fontScale
+					val xHeightCenterPx = with(density) { (textStyle.fontSize * 0.28f).roundToPx() }
+					// Совмещаем геометрический центр линии (measuredHeight / 2) с оптическим центром букв
+					(placeable.measuredHeight / 2) + xHeightCenterPx
+				}
 		)
 
 		Spacer(modifier = Modifier.width(8.dp))
 
 		Text(
 			text = text,
-			style = MaterialTheme.typography.bodyMedium,
+			modifier = Modifier.alignBy(FirstBaseline),
+			style = textStyle,
 			maxLines = 1,
-			overflow = TextOverflow.Ellipsis // Защита от переноса текста на вторую строку при сжатии
+			overflow = TextOverflow.Ellipsis
 		)
 	}
 }
