@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -28,62 +29,96 @@ fun LegendComponent(modifier: Modifier = Modifier) {
 			.fillMaxWidth()
 			.background(Color.Red)
 	) {
-		Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-			Text("Совместимость", color = Color.White)
+		Box(
+			modifier = Modifier.fillMaxWidth(),
+			contentAlignment = Alignment.Center
+		) {
+			Text(
+				text = "Совместимость",
+				color = Color.White,
+				maxLines = 1
+			)
 		}
-		Row(modifier = Modifier.fillMaxSize()) {
-			// Левая половина (Желтая)
+
+		// Используем weight(1f) вместо fillMaxSize(), чтобы Row заняла ровно оставшееся место
+		Row(modifier = Modifier.weight(1f)) {
+			// Левая половина
 			Column(
 				modifier = Modifier
 					.fillMaxHeight()
 					.weight(0.5f)
 					.background(Color.Yellow)
-					.padding(8.dp), // Отступы внутри колонки
-				verticalArrangement = Arrangement.SpaceEvenly // Равномерно распределяет 3 элемента по вертикали
+					.padding(horizontal = 8.dp, vertical = 2.dp) // Уменьшаем вертикальный padding для малых высот
 			) {
-				LegendItem(color = Color(0xFF0E9F00), text = "идеальная")
-				LegendItem(color = Color(0xFF52E219), text = "высокая")
-				LegendItem(color = Color(0xFFC8E32C), text = "нормальная")
+				LegendItem(
+					color = Color(0xFF0E9F00),
+					text = "идеальная",
+					modifier = Modifier.weight(1f)
+				)
+				LegendItem(
+					color = Color(0xFF52E219),
+					text = "высокая",
+					modifier = Modifier.weight(1f)
+				)
+				LegendItem(
+					color = Color(0xFFC8E32C),
+					text = "нормальная",
+					modifier = Modifier.weight(1f)
+				)
 			}
 
-			// Правая половина (Пурпурная)
+			// Правая половина
 			Column(
 				modifier = Modifier
 					.fillMaxHeight()
 					.weight(0.5f)
 					.background(Color.Magenta)
-					.padding(8.dp),
-				verticalArrangement = Arrangement.SpaceEvenly
+					.padding(horizontal = 8.dp, vertical = 2.dp)
 			) {
-				LegendItem(color = Color(0xFFFFDA00), text = "приемлемая")
-				LegendItem(color = Color(0xFFFFA400), text = "низкая")
-				LegendItem(color = Color(0xFFFF0000), text = "очень низкая")
+				LegendItem(
+					color = Color(0xFFFFDA00),
+					text = "приемлемая",
+					modifier = Modifier.weight(1f)
+				)
+				LegendItem(
+					color = Color(0xFFFFA400),
+					text = "низкая",
+					modifier = Modifier.weight(1f)
+				)
+				LegendItem(
+					color = Color(0xFFFF0000),
+					text = "очень низкая",
+					modifier = Modifier.weight(1f)
+				)
 			}
 		}
 	}
 }
 
-
 @Composable
-fun LegendItem(color: Color, text: String) {
+fun LegendItem(
+	color: Color,
+	text: String,
+	modifier: Modifier = Modifier
+) {
 	Row(
-		modifier = Modifier.fillMaxWidth(),
-		verticalAlignment = Alignment.CenterVertically // Выравнивает линию и текст по центру по вертикали
+		modifier = modifier.fillMaxWidth(), // Передаем modifier с weight сюда
+		verticalAlignment = Alignment.CenterVertically
 	) {
-		// Цветная линия
 		Box(
 			modifier = Modifier
-				.width(36.dp)        // Ширина линии
-				.height(4.dp)         // Толщина линии
-				.background(color, shape = CircleShape) // Скругленные края для аккуратности
+				.width(36.dp)
+				.height(4.dp)
+				.background(color, shape = CircleShape)
 		)
 
-		Spacer(modifier = Modifier.width(8.dp)) // Отступ между линией и текстом
+		Spacer(modifier = Modifier.width(8.dp))
 
-		// Надпись (расшифровка)
 		Text(
 			text = text,
-			style = MaterialTheme.typography.bodyMedium
+			style = MaterialTheme.typography.bodyMedium,
+			maxLines = 1,
+			overflow = TextOverflow.Ellipsis // Защита от переноса текста на вторую строку при сжатии
 		)
 	}
 }
