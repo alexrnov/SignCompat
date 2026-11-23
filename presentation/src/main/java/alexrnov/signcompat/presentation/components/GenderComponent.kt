@@ -42,7 +42,7 @@ fun GenderComponent(
 			.background(Color.Magenta)
 	) {
 		GenderSelector(
-			title = "мой пол",
+			title = "Мой пол",
 			selectedGender = userGender,
 			onGenderSelected = onUserGenderSelected,
 			modifier = Modifier
@@ -52,7 +52,7 @@ fun GenderComponent(
 		)
 
 		GenderSelector(
-			title = "пол других знаков",
+			title = "Пол других знаков",
 			selectedGender = targetGender,
 			onGenderSelected = onTargetGenderSelected,
 			modifier = Modifier
@@ -78,11 +78,10 @@ fun GenderSelector(
 	) {
 		Text(
 			text = title,
-			style = MaterialTheme.typography.labelMedium,
+			style = MaterialTheme.typography.titleSmall,
 			textAlign = TextAlign.Center,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(bottom = 4.dp)
+			maxLines = 1,
+			modifier = Modifier.fillMaxWidth()
 		)
 
 		Row(
@@ -132,7 +131,7 @@ fun GenderSelector(
 						Text(
 							text = genderButton.name,
 							maxLines = 1,
-							style = MaterialTheme.typography.labelMedium
+							style = MaterialTheme.typography.labelLarge
 						)
 					}
 				}

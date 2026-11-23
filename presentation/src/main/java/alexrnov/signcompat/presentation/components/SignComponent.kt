@@ -104,11 +104,13 @@ fun SignComponent(
 								) {
 									Text(
 										text = sign.name,
-										style = MaterialTheme.typography.labelMedium
+										style = MaterialTheme.typography.labelLarge,
+										maxLines = 1
 									)
 									Text(
 										text = sign.period,
 										style = MaterialTheme.typography.bodySmall,
+										maxLines = 1,
 										color = MaterialTheme.colorScheme.onSurfaceVariant
 									)
 								}

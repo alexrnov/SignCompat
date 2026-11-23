@@ -40,7 +40,10 @@ fun LegendComponent(modifier: Modifier = Modifier) {
 		) {
 			Text(
 				text = "Совместимость",
-				color = Color.White,
+				//style = MaterialTheme.typography.bodyMedium,
+				style = MaterialTheme.typography.titleMedium,
+				color = MaterialTheme.colorScheme.onSurfaceVariant,
+				//color = Color.White,
 				maxLines = 1
 			)
 		}
@@ -106,7 +109,7 @@ fun LegendItem(
 	text: String,
 	modifier: Modifier = Modifier
 ) {
-	val textStyle = MaterialTheme.typography.bodyMedium.copy(
+	val textStyle = MaterialTheme.typography.labelLarge.copy(
 		platformStyle = PlatformTextStyle(includeFontPadding = false)
 	)
 	val density = LocalDensity.current
@@ -134,6 +137,7 @@ fun LegendItem(
 			text = text,
 			modifier = Modifier.alignBy(FirstBaseline),
 			style = textStyle,
+			color = MaterialTheme.colorScheme.onSurfaceVariant,
 			maxLines = 1,
 			overflow = TextOverflow.Ellipsis
 		)
