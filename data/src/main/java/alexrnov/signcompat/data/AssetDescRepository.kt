@@ -6,7 +6,7 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AssetDescriptionRepository(
+class AssetDescRepository(
 	private val context: Context
 ) : DescriptionRepository {
 
@@ -29,7 +29,7 @@ class AssetDescriptionRepository(
 
 	private fun loadFromAssets(): Map<String, String> {
 		return runCatching {
-			val jsonString = context.assets.open("compatibility_descriptions.json")
+			val jsonString = context.resources.openRawResource(R.raw.compat_desc)
 				.bufferedReader()
 				.use { it.readText() }
 

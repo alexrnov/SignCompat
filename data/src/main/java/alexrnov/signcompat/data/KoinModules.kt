@@ -9,5 +9,5 @@ val dataModule = module {
 	// Используем single, так как DataStore должен существовать в единственном экземпляре
 	single<PreferencesRepository> { DataStorePreferencesRepository(androidContext()) }
 
-	single<DescriptionRepository> { AssetDescriptionRepository(androidContext()) }
+	single<DescriptionRepository> { AssetDescRepository(androidContext()) }
 }

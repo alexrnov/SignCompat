@@ -1,5 +1,7 @@
 package alexrnov.signcompat.presentation.components
 
+import alexrnov.signcompat.domain.usecase.CompatLevel
+import alexrnov.signcompat.presentation.toColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +34,7 @@ fun LegendComponent(modifier: Modifier = Modifier) {
 	Column(
 		modifier = modifier
 			.fillMaxWidth()
-			.background(Color.Red)
+			//.background(Color.Red)
 	) {
 		Box(
 			modifier = Modifier.fillMaxWidth(),
@@ -55,21 +57,21 @@ fun LegendComponent(modifier: Modifier = Modifier) {
 				modifier = Modifier
 					.fillMaxHeight()
 					.weight(0.5f)
-					.background(Color.Yellow)
+					//.background(Color.Yellow)
 					.padding(horizontal = 8.dp, vertical = 2.dp) // Уменьшаем вертикальный padding для малых высот
 			) {
 				LegendItem(
-					color = Color(0xFF0E9F00),
+					color = CompatLevel.IDEAL.toColor(),
 					text = "идеальная",
 					modifier = Modifier.weight(1f)
 				)
 				LegendItem(
-					color = Color(0xFF52E219),
+					color = CompatLevel.HIGH.toColor(),
 					text = "высокая",
 					modifier = Modifier.weight(1f)
 				)
 				LegendItem(
-					color = Color(0xFFC8E32C),
+					color = CompatLevel.NORMAL.toColor(),
 					text = "нормальная",
 					modifier = Modifier.weight(1f)
 				)
@@ -80,21 +82,21 @@ fun LegendComponent(modifier: Modifier = Modifier) {
 				modifier = Modifier
 					.fillMaxHeight()
 					.weight(0.5f)
-					.background(Color.Magenta)
+					//.background(Color.Magenta)
 					.padding(horizontal = 8.dp, vertical = 2.dp)
 			) {
 				LegendItem(
-					color = Color(0xFFFFDA00),
+					color = CompatLevel.ACCEPTABLE.toColor(),
 					text = "приемлемая",
 					modifier = Modifier.weight(1f)
 				)
 				LegendItem(
-					color = Color(0xFFFFA400),
+					color = CompatLevel.LOW.toColor(),
 					text = "низкая",
 					modifier = Modifier.weight(1f)
 				)
 				LegendItem(
-					color = Color(0xFFFF0000),
+					color = CompatLevel.VERY_LOW.toColor(),
 					text = "очень низкая",
 					modifier = Modifier.weight(1f)
 				)

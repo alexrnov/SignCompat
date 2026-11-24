@@ -22,11 +22,11 @@ fun getZodiacSigns() = listOf(
 
 fun CompatLevel.toColor(): Color {
 	return when (this) {
-		CompatLevel.IDEAL -> Color(0xFF0E9F00)
-		CompatLevel.HIGH -> Color(0xFF52E219)
-		CompatLevel.NORMAL -> Color(0xFFC8E32C)
-		CompatLevel.ACCEPTABLE -> Color(0xFFFFDA00)
-		CompatLevel.LOW -> Color(0xFFFFA400)
+		CompatLevel.IDEAL -> Color(0xFF4B9B09)
+		CompatLevel.HIGH -> Color(0xFF67CD3C)
+		CompatLevel.NORMAL -> Color(0xFFDAE32C)
+		CompatLevel.ACCEPTABLE -> Color(0xFFFFEB3B)
+		CompatLevel.LOW -> Color(0xFFFF8800)
 		CompatLevel.VERY_LOW -> Color(0xFFFF0000)
 	}
 }
