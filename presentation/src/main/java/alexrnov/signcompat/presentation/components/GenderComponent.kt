@@ -1,6 +1,7 @@
 package alexrnov.signcompat.presentation.components
 
 import alexrnov.signcompat.domain.usecase.Gender
+import alexrnov.signcompat.presentation.toColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,7 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -78,7 +82,7 @@ fun GenderSelector(
 	) {
 		Text(
 			text = title,
-			style = MaterialTheme.typography.titleSmall,
+			style = MaterialTheme.typography.labelLarge,
 			textAlign = TextAlign.Center,
 			maxLines = 1,
 			modifier = Modifier.fillMaxWidth()
@@ -105,17 +109,18 @@ fun GenderSelector(
 					Row(
 						modifier = Modifier
 							.fillMaxSize()
-							.border(width = 0.5.dp, color = dividerColor, shape = RectangleShape),
+							.border(width = 0.5.dp, color = dividerColor, shape = RectangleShape)
+							.padding(start = 5.dp, end = 3.dp), // <-- Добавляем отступ от левого края
 						verticalAlignment = Alignment.CenterVertically,
-						horizontalArrangement = Arrangement.Center
+						horizontalArrangement = Arrangement.Start // <-- Выравниваем содержимое по левому краю
 					) {
 						Box(
 							modifier = Modifier
-								.padding(end = 8.dp)
-								.fillMaxHeight(0.8f)
+								.padding(end = 5.dp)
+								.fillMaxHeight(0.80f)
 								.aspectRatio(1f)
 								.background(color = genderButton.ringColor, shape = CircleShape)
-								.padding(5.dp),
+								.padding(4.dp),
 							contentAlignment = Alignment.Center
 						) {
 							Box(
@@ -131,7 +136,15 @@ fun GenderSelector(
 						Text(
 							text = genderButton.name,
 							maxLines = 1,
-							style = MaterialTheme.typography.labelLarge
+							softWrap = false,
+							overflow = TextOverflow.Ellipsis, // Сработает, если текст не влезет даже при labelSmall
+							//overflow = TextOverflow.Clip,
+							style = MaterialTheme.typography.labelLarge,
+							autoSize = TextAutoSize.StepBased(
+								minFontSize = MaterialTheme.typography.labelSmall.fontSize,
+								maxFontSize = MaterialTheme.typography.labelSmall.fontSize,
+								stepSize = 0.5.sp
+							)
 						)
 					}
 				}
@@ -148,6 +161,6 @@ data class GenderButton(
 )
 
 val genders = listOf(
-	GenderButton(Gender.MALE, "Муж.", "♂️", Color(0xFF2196F3)),
-	GenderButton(Gender.FEMALE, "Жен.", "♀️", Color(0xFFFF6293))
+	GenderButton(Gender.MALE, "Male", "♂️", Gender.MALE.toColor()),
+	GenderButton(Gender.FEMALE, "Female", "♀️", Gender.FEMALE.toColor())
 )

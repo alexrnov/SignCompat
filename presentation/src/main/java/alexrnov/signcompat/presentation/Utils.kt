@@ -2,6 +2,7 @@ package alexrnov.signcompat.presentation
 
 import alexrnov.signcompat.domain.usecase.CompatLevel
 import alexrnov.signcompat.domain.usecase.ZodiacSign
+import alexrnov.signcompat.domain.usecase.Gender
 import alexrnov.signcompat.presentation.components.Sign
 import androidx.compose.ui.graphics.Color
 
@@ -39,5 +40,20 @@ fun CompatLevel.toTitle(): String {
 		CompatLevel.ACCEPTABLE -> "Приемлемая совместимость"
 		CompatLevel.LOW -> "Низкая совместимость"
 		CompatLevel.VERY_LOW -> "Очень низкая совместимость"
+	}
+}
+
+/*
+enum class GenderColor(val color: Color) {
+	MALE(Color(0xFF218AF3)),
+	FEMALE(Color(0xFFFF6293))
+}
+
+ */
+
+fun Gender.toColor(): Color {
+	return when(this) {
+		Gender.MALE -> Color(0xFF218AF3)
+		Gender.FEMALE -> Color(0xFFEE9BB0)
 	}
 }

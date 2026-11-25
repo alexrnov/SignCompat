@@ -37,6 +37,7 @@ android {
 
 dependencies {
 	implementation(libs.androidx.appcompat)
+	implementation(platform("androidx.compose:compose-bom:2026.09.00"))
 	implementation(libs.androidx.compose.ui.text)
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.material)
