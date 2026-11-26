@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -82,9 +80,16 @@ fun GenderSelector(
 	) {
 		Text(
 			text = title,
-			style = MaterialTheme.typography.labelLarge,
-			textAlign = TextAlign.Center,
 			maxLines = 1,
+			softWrap = false,
+			overflow = TextOverflow.Ellipsis, // Сработает, если текст не влезет даже при labelSmall
+			style = MaterialTheme.typography.labelLarge,
+			autoSize = TextAutoSize.StepBased(
+				minFontSize = MaterialTheme.typography.labelMedium.fontSize,
+				maxFontSize = MaterialTheme.typography.labelLarge.fontSize,
+				stepSize = 0.5.sp
+			),
+			textAlign = TextAlign.Center,
 			modifier = Modifier.fillMaxWidth()
 		)
 
@@ -137,14 +142,8 @@ fun GenderSelector(
 							text = genderButton.name,
 							maxLines = 1,
 							softWrap = false,
-							overflow = TextOverflow.Ellipsis, // Сработает, если текст не влезет даже при labelSmall
-							//overflow = TextOverflow.Clip,
-							style = MaterialTheme.typography.labelLarge,
-							autoSize = TextAutoSize.StepBased(
-								minFontSize = MaterialTheme.typography.labelSmall.fontSize,
-								maxFontSize = MaterialTheme.typography.labelSmall.fontSize,
-								stepSize = 0.5.sp
-							)
+							overflow = TextOverflow.Ellipsis,
+							style = MaterialTheme.typography.labelSmall,
 						)
 					}
 				}
