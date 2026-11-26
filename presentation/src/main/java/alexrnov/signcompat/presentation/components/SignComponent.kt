@@ -4,6 +4,7 @@ import alexrnov.signcompat.domain.usecase.Person
 import alexrnov.signcompat.domain.usecase.ZodiacSign
 import alexrnov.signcompat.presentation.getZodiacSigns
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,6 +32,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.EmojiSupportMatch
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -85,7 +89,7 @@ fun SignComponent(
 						) {
 							Box(
 								modifier = Modifier
-									.padding(start = 6.dp)
+									.padding(start = 5.dp)
 									.fillMaxHeight(0.6f)
 									.aspectRatio(1f)
 									.background(color = Color(0xFF8E24AA), shape = CircleShape),
@@ -95,7 +99,7 @@ fun SignComponent(
 							}
 
 							Box(
-								modifier = Modifier.weight(1f),
+								modifier = Modifier.weight(1f).padding(end = 3.dp),
 								contentAlignment = Alignment.Center
 							) {
 								Column(
@@ -104,13 +108,31 @@ fun SignComponent(
 								) {
 									Text(
 										text = sign.name,
+										modifier = Modifier
+											.padding(start = 3.dp, end = 3.dp)
+											.then(
+												if (isSelected) {
+													Modifier.basicMarquee(iterations = Int.MAX_VALUE)
+												} else {
+													Modifier
+												}
+											),
+										maxLines = 1,
+										overflow = if (isSelected) TextOverflow.Clip else TextOverflow.Ellipsis,
 										style = MaterialTheme.typography.labelLarge,
-										maxLines = 1
+										color = MaterialTheme.colorScheme.onSurfaceVariant
 									)
+
 									Text(
 										text = sign.period,
-										style = MaterialTheme.typography.bodySmall,
 										maxLines = 1,
+										overflow = TextOverflow.Ellipsis,
+										style = MaterialTheme.typography.bodySmall,
+										autoSize = TextAutoSize.StepBased(
+											minFontSize = 10.sp,
+											maxFontSize = MaterialTheme.typography.bodySmall.fontSize,
+											stepSize = 0.5.sp
+										),
 										color = MaterialTheme.colorScheme.onSurfaceVariant
 									)
 								}

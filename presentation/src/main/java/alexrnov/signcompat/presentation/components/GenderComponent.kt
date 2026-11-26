@@ -81,7 +81,6 @@ fun GenderSelector(
 		Text(
 			text = title,
 			maxLines = 1,
-			softWrap = false,
 			overflow = TextOverflow.Ellipsis, // Сработает, если текст не влезет даже при labelSmall
 			style = MaterialTheme.typography.labelLarge,
 			autoSize = TextAutoSize.StepBased(
