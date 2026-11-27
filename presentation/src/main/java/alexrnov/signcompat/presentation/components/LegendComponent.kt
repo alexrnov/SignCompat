@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -37,16 +38,16 @@ fun LegendComponent(modifier: Modifier = Modifier) {
 			//.background(Color.Red)
 	) {
 		Box(
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier.fillMaxWidth().padding(bottom = 2.dp),
 			contentAlignment = Alignment.Center
 		) {
 			Text(
 				text = "Совместимость",
-				//style = MaterialTheme.typography.bodyMedium,
 				style = MaterialTheme.typography.titleMedium,
+				textAlign = TextAlign.Center,
+				overflow = TextOverflow.Ellipsis,
+				maxLines = 1,
 				color = MaterialTheme.colorScheme.onSurfaceVariant,
-				//color = Color.White,
-				maxLines = 1
 			)
 		}
 
@@ -58,7 +59,7 @@ fun LegendComponent(modifier: Modifier = Modifier) {
 					.fillMaxHeight()
 					.weight(0.5f)
 					//.background(Color.Yellow)
-					.padding(horizontal = 8.dp, vertical = 2.dp) // Уменьшаем вертикальный padding для малых высот
+					.padding(horizontal = 8.dp)
 			) {
 				LegendItem(
 					color = CompatLevel.IDEAL.toColor(),
@@ -83,7 +84,7 @@ fun LegendComponent(modifier: Modifier = Modifier) {
 					.fillMaxHeight()
 					.weight(0.5f)
 					//.background(Color.Magenta)
-					.padding(horizontal = 8.dp, vertical = 2.dp)
+					.padding(horizontal = 8.dp)
 			) {
 				LegendItem(
 					color = CompatLevel.ACCEPTABLE.toColor(),

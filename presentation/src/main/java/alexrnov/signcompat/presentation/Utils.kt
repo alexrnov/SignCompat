@@ -14,7 +14,7 @@ fun getZodiacSigns() = listOf(
 	Sign(ZodiacSign.LEO, "Лев", "♌\uFE0E", "23.07-22.08"),
 	Sign(ZodiacSign.VIRGO, "Дева", "♍\uFE0E", "23.08-22.09"),
 	Sign(ZodiacSign.LIBRA, "Весы", "♎\uFE0E", "23.09-22.10"),
-	Sign(ZodiacSign.SCORPIO, "Скорпионhkh", "♏\uFE0E", "23.10-21.11"),
+	Sign(ZodiacSign.SCORPIO, "Скорпион", "♏\uFE0E", "23.10-21.11"),
 	Sign(ZodiacSign.SAGITTARIUS, "Стрелец", "♐\uFE0E", "22.11-21.12"),
 	Sign(ZodiacSign.CAPRICORN, "Козерог", "♑\uFE0E", "22.12-19.01"),
 	Sign(ZodiacSign.AQUARIUS, "Водолей", "♒\uFE0E", "20.01-18.02"),
